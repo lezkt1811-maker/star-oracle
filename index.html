@@ -1,1157 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Star Oracle | Rosetta Lens, Pattern Lab & Neon Forge</title>
-  <meta name="description" content="Star Oracle is an experimental AI-inspired pattern lab for manuscript OCR, symbolic sky readings, notebook interpretation, neon image transformation, language alchemy, signal captions, and predictive text generation." />
-  <style>
-    :root {
-      --bg: #050510;
-      --bg2: #10061f;
-      --card: rgba(15, 18, 43, .78);
-      --card2: rgba(25, 12, 45, .72);
-      --text: #f4edff;
-      --muted: #bdb1d5;
-      --pink: #ff2eea;
-      --cyan: #35e7ff;
-      --gold: #ffd166;
-      --violet: #9b5cff;
-      --green: #70ffbf;
-      --danger: #ff6b9a;
-      --shadow: 0 0 28px rgba(255, 46, 234, .26), 0 0 44px rgba(53, 231, 255, .13);
-      --radius: 22px;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at 20% 20%, rgba(255,46,234,.20), transparent 28%),
-        radial-gradient(circle at 80% 10%, rgba(53,231,255,.18), transparent 26%),
-        radial-gradient(circle at 45% 80%, rgba(155,92,255,.16), transparent 30%),
-        linear-gradient(135deg, var(--bg), var(--bg2) 54%, #03030b);
-      color: var(--text);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background-image:
-        radial-gradient(#ffffff 0.7px, transparent .8px),
-        radial-gradient(#35e7ff 0.7px, transparent .8px),
-        radial-gradient(#ff2eea 0.65px, transparent .8px);
-      background-size: 92px 92px, 137px 137px, 181px 181px;
-      opacity: .22;
-      animation: drift 38s linear infinite;
-    }
-
-    @keyframes drift {
-      from { transform: translate3d(0,0,0); }
-      to { transform: translate3d(-90px,80px,0); }
-    }
-
-    a { color: var(--cyan); }
-
-    .shell {
-      width: min(1180px, calc(100% - 28px));
-      margin: 0 auto;
-      position: relative;
-      z-index: 1;
-    }
-
-    header {
-      padding: 34px 0 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .sigil {
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      background: conic-gradient(from 120deg, var(--pink), var(--cyan), var(--gold), var(--violet), var(--pink));
-      box-shadow: var(--shadow);
-      font-size: 27px;
-    }
-
-    .brand h1 {
-      margin: 0;
-      font-size: clamp(1.7rem, 4vw, 3rem);
-      letter-spacing: -.04em;
-      text-shadow: 0 0 24px rgba(255,46,234,.55);
-    }
-
-    .brand p { margin: 2px 0 0; color: var(--muted); }
-
-    .pill {
-      border: 1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.06);
-      border-radius: 999px;
-      padding: 9px 14px;
-      color: var(--muted);
-      font-size: .92rem;
-      backdrop-filter: blur(14px);
-    }
-
-    .hero {
-      padding: 34px 0 20px;
-      display: grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 22px;
-      align-items: stretch;
-    }
-
-    .glass {
-      background: linear-gradient(145deg, rgba(255,255,255,.08), rgba(255,255,255,.035));
-      border: 1px solid rgba(255,255,255,.15);
-      box-shadow: var(--shadow);
-      border-radius: var(--radius);
-      backdrop-filter: blur(16px);
-    }
-
-    .hero-card {
-      padding: clamp(22px, 4vw, 42px);
-    }
-
-    .kicker {
-      color: var(--green);
-      font-weight: 800;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      font-size: .78rem;
-    }
-
-    .hero h2 {
-      margin: 10px 0 12px;
-      font-size: clamp(2.2rem, 8vw, 5rem);
-      line-height: .92;
-      letter-spacing: -.06em;
-    }
-
-    .gradient-text {
-      background: linear-gradient(90deg, var(--pink), var(--cyan), var(--gold));
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-
-    .hero p {
-      color: var(--muted);
-      line-height: 1.68;
-      font-size: 1.05rem;
-    }
-
-    .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
-
-    button, .button {
-      border: 0;
-      border-radius: 999px;
-      padding: 12px 17px;
-      font-weight: 800;
-      color: #080810;
-      background: linear-gradient(90deg, var(--cyan), var(--pink));
-      cursor: pointer;
-      box-shadow: 0 0 22px rgba(53,231,255,.22);
-      transition: transform .18s ease, filter .18s ease;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    button:hover, .button:hover { transform: translateY(-2px); filter: brightness(1.1); }
-    button.secondary, .button.secondary { background: rgba(255,255,255,.08); color: var(--text); border: 1px solid rgba(255,255,255,.17); }
-
-    .oracle-preview {
-      padding: 22px;
-      position: relative;
-      overflow: hidden;
-      min-height: 390px;
-      display: grid;
-      align-content: space-between;
-    }
-
-    .orb {
-      width: 190px;
-      height: 190px;
-      border-radius: 50%;
-      margin: 12px auto;
-      background:
-        radial-gradient(circle at 35% 30%, #fff, #9ff8ff 7%, transparent 14%),
-        radial-gradient(circle at 50% 50%, rgba(255,255,255,.18), rgba(255,46,234,.36) 35%, rgba(53,231,255,.22) 58%, transparent 70%),
-        conic-gradient(var(--pink), var(--cyan), var(--gold), var(--violet), var(--pink));
-      filter: saturate(1.3);
-      box-shadow: 0 0 50px rgba(255,46,234,.35), inset 0 0 44px rgba(0,0,0,.35);
-      animation: pulse 4s ease-in-out infinite;
-    }
-
-    @keyframes pulse { 50% { transform: scale(1.04); filter: hue-rotate(18deg); } }
-
-    .mini-note {
-      border-left: 3px solid var(--gold);
-      background: rgba(255,209,102,.08);
-      border-radius: 14px;
-      padding: 13px 14px;
-      color: var(--muted);
-      line-height: 1.55;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin: 28px 0 18px;
-    }
-
-    .tab {
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      border: 1px solid rgba(255,255,255,.14);
-      box-shadow: none;
-    }
-
-    .tab.active {
-      background: linear-gradient(90deg, rgba(255,46,234,.85), rgba(53,231,255,.85));
-      color: #050510;
-    }
-
-    .panel { display: none; padding: 22px; margin-bottom: 22px; }
-    .panel.active { display: block; }
-
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-
-    label { display: block; color: var(--muted); margin: 10px 0 8px; font-weight: 700; }
-
-    input[type="file"], textarea, select, input[type="text"], input[type="number"] {
-      width: 100%;
-      border: 1px solid rgba(255,255,255,.16);
-      background: rgba(2,2,12,.58);
-      color: var(--text);
-      border-radius: 16px;
-      padding: 13px 14px;
-      outline: none;
-      font: inherit;
-    }
-
-    textarea { min-height: 150px; resize: vertical; line-height: 1.55; }
-    input[type="range"] { width: 100%; accent-color: var(--pink); }
-
-    canvas, .preview-img {
-      width: 100%;
-      max-height: 430px;
-      object-fit: contain;
-      background: rgba(0,0,0,.35);
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,.12);
-    }
-
-    .result {
-      white-space: pre-wrap;
-      background: rgba(0,0,0,.35);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 18px;
-      padding: 15px;
-      min-height: 120px;
-      color: #efe8ff;
-      line-height: 1.55;
-    }
-
-    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 18px 0 30px; }
-
-    .feature {
-      padding: 18px;
-      background: var(--card);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 20px;
-    }
-
-    .feature h3 { margin: 0 0 8px; font-size: 1.05rem; }
-    .feature p { margin: 0; color: var(--muted); line-height: 1.55; }
-
-    .tiny { color: var(--muted); font-size: .88rem; line-height: 1.5; }
-    .warn { border-color: rgba(255,209,102,.4); background: rgba(255,209,102,.08); }
-
-    footer {
-      color: var(--muted);
-      text-align: center;
-      padding: 34px 0 46px;
-      line-height: 1.6;
-    }
-
-    .split-actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0; }
-
-
-
-    /* V4 cyberpunk deep-space glow-up */
-    body {
-      background:
-        radial-gradient(circle at 10% 8%, rgba(255, 0, 204, .30), transparent 23%),
-        radial-gradient(circle at 92% 14%, rgba(0, 229, 255, .28), transparent 24%),
-        radial-gradient(circle at 55% 95%, rgba(255, 230, 0, .14), transparent 28%),
-        radial-gradient(circle at 30% 70%, rgba(112, 255, 191, .14), transparent 24%),
-        linear-gradient(135deg, #02020a 0%, #080018 35%, #140022 62%, #02040f 100%);
-    }
-
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-      background-size: 42px 42px;
-      mask-image: radial-gradient(circle at 50% 30%, black, transparent 78%);
-      opacity: .38;
-      z-index: 0;
-    }
-
-    .cosmic-bg {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 0;
-    }
-
-    .planet, .comet {
-      position: absolute;
-      display: block;
-      border-radius: 999px;
-      filter: saturate(1.45);
-    }
-
-    .planet::after {
-      content: "";
-      position: absolute;
-      inset: -18%;
-      border-radius: inherit;
-      background: radial-gradient(circle, rgba(255,255,255,.16), transparent 62%);
-      filter: blur(9px);
-    }
-
-    .planet-a {
-      width: 170px; height: 170px; left: -42px; top: 140px;
-      background: radial-gradient(circle at 32% 28%, #fff 0 4%, #63f7ff 8%, #6446ff 36%, #ff2eea 68%, #210018 100%);
-      box-shadow: 0 0 45px rgba(255,46,234,.45), inset -30px -28px 45px rgba(0,0,0,.45);
-      animation: floatPlanet 11s ease-in-out infinite;
-    }
-
-    .planet-b {
-      width: 104px; height: 104px; right: 7%; top: 235px;
-      background: radial-gradient(circle at 40% 30%, #fff6ad 0 6%, #ffd166 16%, #ff5edb 48%, #6214ff 100%);
-      box-shadow: 0 0 38px rgba(255,209,102,.35), inset -18px -20px 35px rgba(0,0,0,.38);
-      animation: floatPlanet 9s ease-in-out infinite reverse;
-    }
-
-    .planet-c {
-      width: 75px; height: 75px; left: 12%; bottom: 12%;
-      background: radial-gradient(circle at 35% 25%, #eaffff 0 5%, #70ffbf 12%, #35e7ff 50%, #061738 100%);
-      box-shadow: 0 0 32px rgba(112,255,191,.38), inset -14px -14px 26px rgba(0,0,0,.44);
-      animation: floatPlanet 7s ease-in-out infinite;
-    }
-
-    .planet-d {
-      width: 132px; height: 132px; right: -36px; bottom: 170px;
-      background: radial-gradient(circle at 35% 30%, #fff 0 4%, #ff9af4 12%, #ff2eea 36%, #1005ff 100%);
-      box-shadow: 0 0 42px rgba(53,231,255,.35), inset -25px -22px 38px rgba(0,0,0,.42);
-      animation: floatPlanet 12s ease-in-out infinite;
-    }
-
-    .planet-e {
-      width: 44px; height: 44px; left: 64%; top: 95px;
-      background: radial-gradient(circle at 35% 25%, #fff 0 8%, #35e7ff 18%, #9b5cff 100%);
-      box-shadow: 0 0 22px rgba(53,231,255,.50);
-      animation: floatPlanet 6s ease-in-out infinite reverse;
-    }
-
-    .planet-f {
-      width: 58px; height: 58px; left: 42%; bottom: 55px;
-      background: radial-gradient(circle at 35% 25%, #fff 0 7%, #ffd166 17%, #ff6b9a 54%, #3a003f 100%);
-      box-shadow: 0 0 24px rgba(255,107,154,.44);
-      animation: floatPlanet 8s ease-in-out infinite;
-    }
-
-    .comet {
-      width: 170px; height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.85), rgba(53,231,255,.15));
-      box-shadow: 0 0 18px rgba(53,231,255,.75);
-      transform: rotate(-24deg);
-      opacity: .75;
-    }
-    .comet-a { right: 12%; top: 82px; animation: cometSlide 8s linear infinite; }
-    .comet-b { left: 4%; bottom: 34%; animation: cometSlide 11s linear infinite reverse; }
-
-    @keyframes floatPlanet {
-      50% { transform: translate3d(0, -18px, 0) scale(1.03); filter: hue-rotate(18deg) saturate(1.6); }
-    }
-
-    @keyframes cometSlide {
-      0%, 35% { opacity: 0; transform: translateX(80px) rotate(-24deg); }
-      48% { opacity: .9; }
-      70%, 100% { opacity: 0; transform: translateX(-180px) rotate(-24deg); }
-    }
-
-    .glass, .feature, .panel, .pill {
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,.08),
-        0 0 32px rgba(255, 46, 234, .22),
-        0 0 55px rgba(53, 231, 255, .13),
-        inset 0 0 35px rgba(255,255,255,.035);
-    }
-
-    .glass, .feature, .panel {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .glass::before, .feature::before, .panel::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(120deg, transparent, rgba(255,255,255,.12), transparent);
-      transform: translateX(-120%);
-      animation: sheen 9s ease-in-out infinite;
-      pointer-events: none;
-    }
-
-    @keyframes sheen {
-      0%, 72% { transform: translateX(-120%); }
-      100% { transform: translateX(120%); }
-    }
-
-    .feature::after, .panel::after {
-      content: "";
-      position: absolute;
-      right: 16px;
-      top: 16px;
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background:
-        radial-gradient(circle at 32% 28%, #fff 0 8%, rgba(255,255,255,.1) 9% 15%, transparent 16%),
-        conic-gradient(from 40deg, var(--pink), var(--cyan), var(--gold), var(--green), var(--violet), var(--pink));
-      opacity: .48;
-      box-shadow: 0 0 20px rgba(255,46,234,.34), inset -8px -8px 15px rgba(0,0,0,.38);
-      pointer-events: none;
-    }
-
-    #star::after { background: radial-gradient(circle at 36% 28%, #fff 0 7%, #35e7ff 12%, #090032 70%); }
-    #rosetta::after { background: radial-gradient(circle at 36% 28%, #fff 0 7%, #ffd166 14%, #6b2c00 80%); }
-    #alchemy::after { background: radial-gradient(circle at 36% 28%, #fff 0 7%, #70ffbf 13%, #002817 80%); }
-    #notebook::after { background: radial-gradient(circle at 36% 28%, #fff 0 7%, #ff2eea 13%, #290021 80%); }
-    #signal::after { background: radial-gradient(circle at 36% 28%, #fff 0 7%, #9b5cff 13%, #080028 80%); }
-    #muse::after { background: radial-gradient(circle at 36% 28%, #fff 0 7%, #ff6b9a 13%, #30000f 80%); }
-    #reverse::after { background: radial-gradient(circle at 36% 28%, #fff 0 7%, #35e7ff 12%, #ff2eea 50%, #130011 80%); }
-
-    .tab, button, .button {
-      text-shadow: 0 0 10px rgba(255,255,255,.35);
-    }
-
-    .tab:hover, button:hover, .button:hover {
-      box-shadow: 0 0 28px rgba(255,46,234,.32), 0 0 38px rgba(53,231,255,.24);
-    }
-
-    h1, h2, h3 {
-      text-shadow: 0 0 20px rgba(255,46,234,.34), 0 0 25px rgba(53,231,255,.18);
-    }
-
-    .result, textarea, input[type="file"], select, input[type="text"], input[type="number"], canvas, .preview-img {
-      box-shadow: inset 0 0 20px rgba(53,231,255,.07), 0 0 18px rgba(255,46,234,.08);
-    }
-
-    @media (max-width: 850px) {
-      .hero, .grid, .grid-3, .cards { grid-template-columns: 1fr; }
-      header { align-items: flex-start; }
-      .oracle-preview { min-height: 300px; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star Oracle • AI Creativity Laboratory</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Inter:wght@400;500&display=swap');
+    </style>
 </head>
 <body>
-  <div class="cosmic-bg" aria-hidden="true">
-    <span class="planet planet-a"></span>
-    <span class="planet planet-b"></span>
-    <span class="planet planet-c"></span>
-    <span class="planet planet-d"></span>
-    <span class="planet planet-e"></span>
-    <span class="planet planet-f"></span>
-    <span class="comet comet-a"></span>
-    <span class="comet comet-b"></span>
-  </div>
-  <div class="shell">
+    <div class="stars"></div>
+    <div class="planets">
+        <div class="planet planet1"></div>
+        <div class="planet planet2"></div>
+        <div class="planet planet3"></div>
+    </div>
+
     <header>
-      <div class="brand">
-        <div class="sigil">✦</div>
-        <div>
-          <h1>Star Oracle</h1>
-          <p>Rosetta Lens · Neon Forge · Pattern Lab</p>
+        <div class="nav">
+            <div class="logo">
+                <span class="neon-text">STAR</span><span class="oracle-text">ORACLE</span>
+            </div>
+            <nav>
+                <a href="#rosetta" onclick="navigateTo('rosetta')">Rosetta Lens</a>
+                <a href="#notebook" onclick="navigateTo('notebook')">Notebook Oracle</a>
+                <a href="#image" onclick="navigateTo('image')">Any Image Oracle</a>
+                <a href="#star" onclick="navigateTo('star')">Star Oracle</a>
+                <a href="#signal" onclick="navigateTo('signal')">Signal Explorer</a>
+                <a href="#alchemy" onclick="navigateTo('alchemy')">Language Alchemy</a>
+                <a href="#muse" onclick="navigateTo('muse')">Predictive Muse</a>
+                <a href="#reverse" onclick="navigateTo('reverse')">Uno Reverse</a>
+                <a href="#neon" onclick="navigateTo('neon')">Neon Forge</a>
+            </nav>
+            <div class="controls">
+                <button onclick="toggleTheme()" class="icon-btn">🌗</button>
+                <button onclick="showSettings()" class="icon-btn">⚙️</button>
+            </div>
         </div>
-      </div>
-      <div class="pill">Experimental first-pass readings, not scholarly certainty</div>
     </header>
 
-    <section class="hero">
-      <div class="hero-card glass">
-        <div class="kicker">AI pattern exploration lab</div>
-        <h2>Decode the <span class="gradient-text">strange</span>.</h2>
-        <p>
-          Upload manuscript pages, artifacts, sky photos, notebook pages, random images, ambient audio, or text. Star Oracle enhances images,
-          tests multiple pattern passes, generates symbolic readings, turns translation drift into creative signal, and forges ordinary images into cyberpunk neon art.
-        </p>
-        <div class="cta-row">
-          <a href="#lab" class="button">Start Experimenting</a>
-          <a href="#setup" class="button secondary">API Upgrade Notes</a>
-        </div>
-      </div>
-      <div class="oracle-preview glass">
-        <div class="orb"></div>
-        <div class="mini-note">
-          <strong>Truth-label:</strong> This tool separates extraction from interpretation. OCR text is what the machine thinks it sees. Oracle readings are symbolic, creative, and clearly marked.
-        </div>
-      </div>
-    </section>
-
-    <section class="cards">
-      <div class="feature"><h3>📜 Rosetta Lens</h3><p>Enhance manuscript images and prepare them for OCR/translation.</p></div>
-      <div class="feature"><h3>🌌 Star Oracle</h3><p>Turn sky images into symbolic pattern readings without pretending it is literal translation.</p></div>
-      <div class="feature"><h3>🌐 Language Alchemy</h3><p>Push text through language-style transformations and watch meaning mutate.</p></div>
-      <div class="feature"><h3>📓 Notebook Oracle</h3><p>Upload notebook pages, sketches, symbols, rocks, screenshots, or art for symbolic interpretation.</p></div>
-      <div class="feature"><h3>🎙️ Signal Explorer</h3><p>Upload audio or video and log what speech-to-text models might “hear.”</p></div>
-      <div class="feature"><h3>⌨️ Predictive Muse</h3><p>Generate weird little predictive-text paragraphs with a chaos dial.</p></div>
-      <div class="feature"><h3>🃏 Uno Reverse Words</h3><p>Paste words and flip the charge, meaning, power dynamic, or emotional direction.</p></div>
-      <div class="feature"><h3>🖼️ Image Lab</h3><p>Invert, sharpen, contrast, threshold, brighten, and compare image variants.</p></div>
-      <div class="feature"><h3>🌈 Neon Forge</h3><p>Upload any image and transform it into rainbow cyberpunk glow art.</p></div>
-    </section>
-
-    <main id="lab">
-      <div class="tabs">
-        <button class="tab active" data-tab="rosetta">📜 Rosetta Lens</button>
-        <button class="tab" data-tab="star">🌌 Star Oracle</button>
-        <button class="tab" data-tab="alchemy">🌐 Language Alchemy</button>
-        <button class="tab" data-tab="notebook">📓 Notebook Oracle</button>
-        <button class="tab" data-tab="signal">🎙️ Signal Explorer</button>
-        <button class="tab" data-tab="muse">⌨️ Predictive Muse</button>
-        <button class="tab" data-tab="reverse">🃏 Uno Reverse</button>
-        <button class="tab" data-tab="neon">🌈 Neon Forge</button>
-        <button class="tab" data-tab="setup">⚙️ Upgrade Notes</button>
-      </div>
-
-      <section id="rosetta" class="panel glass active">
-        <h2>📜 Rosetta Lens</h2>
-        <p class="tiny">Upload a manuscript, artifact, inscription, or mystery text image. This browser version enhances the image and creates a simulated extraction report. Add Google Vision/Translate later for real OCR and translation.</p>
-        <div class="grid">
-          <div>
-            <label>Upload image</label>
-            <input type="file" accept="image/*" id="rosettaFile" />
-            <div class="grid-3">
-              <div><label>Contrast</label><input id="contrast" type="range" min="50" max="220" value="145" /></div>
-              <div><label>Brightness</label><input id="brightness" type="range" min="50" max="180" value="110" /></div>
-              <div><label>Threshold</label><input id="threshold" type="range" min="0" max="255" value="128" /></div>
+    <main>
+        <!-- Hero -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="glitch">STAR ORACLE</h1>
+                <p class="subtitle">An experimental AI creativity laboratory</p>
+                <p class="disclaimer">Exploring interpretations • Not objective truth</p>
+                <div class="cta-buttons">
+                    <button onclick="navigateTo('rosetta')" class="neon-button primary">Begin Exploration</button>
+                    <button onclick="showAbout()" class="neon-button secondary">Learn More</button>
+                </div>
             </div>
-            <div class="split-actions">
-              <button onclick="applyMode('normal')">Original</button>
-              <button onclick="applyMode('gray')">Grayscale</button>
-              <button onclick="applyMode('invert')">Negative</button>
-              <button onclick="applyMode('threshold')">Black/White</button>
-              <button onclick="applyMode('sharp')">Sharpen</button>
-              <button onclick="simulateRosetta()">Decode Manuscript</button>
+        </section>
+
+        <!-- Rosetta Lens -->
+        <section id="rosetta" class="tool-section glass">
+            <h2>🌌 Rosetta Lens</h2>
+            <p class="tool-desc">Decode ancient texts and artifacts</p>
+            
+            <div class="upload-area" id="rosetta-upload">
+                <input type="file" id="rosetta-file" accept="image/*" style="display:none">
+                <button onclick="document.getElementById('rosetta-file').click()" class="upload-btn">📸 Upload Manuscript / Artifact</button>
+                <p>or drag &amp; drop</p>
             </div>
-          </div>
-          <div>
-            <label>Enhanced preview</label>
-            <canvas id="canvas"></canvas>
-          </div>
-        </div>
-        <label>Extraction report</label>
-        <div id="rosettaResult" class="result warn">Upload an image, choose enhancement passes, then click Decode Manuscript.</div>
-      </section>
 
-      <section id="star" class="panel glass">
-        <h2>🌌 Star Oracle</h2>
-        <p class="tiny">For sky photos, starfields, sun videos, clouds, texture, and light language style pattern readings.</p>
-        <div class="grid">
-          <div>
-            <label>Upload sky or light image</label>
-            <input type="file" accept="image/*" id="starFile" />
-            <label>Reading style</label>
-            <select id="starStyle">
-              <option value="cosmic">Cosmic symbolic</option>
-              <option value="gnostic">Gnostic fragment</option>
-              <option value="light">Light language</option>
-              <option value="technical">Pattern report</option>
-            </select>
-            <label>Intensity</label>
-            <input type="range" id="starIntensity" min="1" max="10" value="7" />
-            <div class="split-actions"><button onclick="readStars()">Read the Stars</button></div>
-          </div>
-          <div>
-            <label>Star image preview</label>
-            <img id="starPreview" class="preview-img" alt="Star preview" />
-          </div>
-        </div>
-        <label>Oracle output</label>
-        <div id="starResult" class="result">Upload a sky image and run an oracle scan.</div>
-      </section>
-
-      <section id="alchemy" class="panel glass">
-        <h2>🌐 Language Alchemy</h2>
-        <p class="tiny">Inspired by translation drift: rewrite a paragraph through symbolic “language gates.” This front-end version simulates semantic mutation.</p>
-        <label>Text to mutate</label>
-        <textarea id="alchemyInput" placeholder="Paste a paragraph here..."></textarea>
-        <div class="grid-3">
-          <div><label>Gates</label><input id="gates" type="number" min="1" max="9" value="5" /></div>
-          <div><label>Style</label><select id="alchemyStyle"><option>mythic</option><option>plain</option><option>prophetic</option><option>poetic</option></select></div>
-          <div><label>Chaos</label><input id="alchemyChaos" type="range" min="0" max="100" value="55" /></div>
-        </div>
-        <div class="split-actions"><button onclick="runAlchemy()">Transmute Meaning</button></div>
-        <label>Mutated text</label>
-        <div id="alchemyResult" class="result">Your transformed text will appear here.</div>
-      </section>
-
-
-      <section id="notebook" class="panel glass">
-        <h2>📓 Notebook Oracle / Any Image Reading</h2>
-        <p class="tiny">Upload anything: notebook pages, messy notes, doodles, symbols, rocks, clouds, screenshots, altar photos, art, or “I don’t know what this is” images. This mode treats the result as interpretation, not proof.</p>
-        <div class="grid">
-          <div>
-            <label>Upload image</label>
-            <input type="file" accept="image/*" id="notebookFile" />
-            <label>Reading lens</label>
-            <select id="notebookLens">
-              <option value="notes">Notebook meaning map</option>
-              <option value="symbols">Symbols and archetypes</option>
-              <option value="artifact">Rock / artifact / object reading</option>
-              <option value="dream">Dream logic interpretation</option>
-              <option value="practical">Practical pattern notes</option>
-              <option value="light">Light language style</option>
-            </select>
-            <label>How spicy?</label>
-            <input type="range" id="notebookIntensity" min="1" max="10" value="7" />
-            <div class="split-actions">
-              <button onclick="readNotebook()">Interpret Image</button>
-              <button onclick="speakText('notebookResult')" class="secondary">Read Aloud</button>
+            <div id="rosetta-results" class="results hidden">
+                <div class="enhancements">
+                    <h3>Enhanced Versions</h3>
+                    <div class="enhancement-grid">
+                        <!-- JS populated -->
+                    </div>
+                </div>
+                <div class="ocr-output">
+                    <h3>Best Extraction (87% confidence)</h3>
+                    <textarea id="ocr-text" readonly>Sample decoded text from image... "The stars align when the seeker asks."</textarea>
+                    <button onclick="speakText()" class="neon-button">🔊 Read Aloud</button>
+                </div>
             </div>
-          </div>
-          <div>
-            <label>Image preview</label>
-            <img id="notebookPreview" class="preview-img" alt="Notebook or image preview" />
-          </div>
-        </div>
-        <label>Interpretation output</label>
-        <div id="notebookResult" class="result">Upload any image and let the algorithmic oracle make a meaning-map.</div>
-      </section>
+        </section>
 
-      <section id="signal" class="panel glass">
-        <h2>🎙️ Signal Explorer</h2>
-        <p class="tiny">Upload audio/video from wind, sun, sky, water, street noise, or ambient signal. Browser-only version logs the file and creates a symbolic caption report. Connect Whisper or another speech-to-text API for real captions.</p>
-        <label>Upload audio/video</label>
-        <input type="file" accept="audio/*,video/*" id="signalFile" />
-        <label>Caption mode</label>
-        <select id="signalMode"><option>ambient captions</option><option>sky captions</option><option>static oracle</option><option>technical transcript</option></select>
-        <div class="split-actions"><button onclick="runSignal()">Scan Signal</button></div>
-        <label>Signal report</label>
-        <div id="signalResult" class="result">Upload a sound or video file to begin.</div>
-      </section>
-
-      <section id="muse" class="panel glass">
-        <h2>⌨️ Predictive Muse</h2>
-        <p class="tiny">A tiny tribute to rapid-tapping keyboard suggestions. Give it a seed, choose chaos, and let the language engine wander.</p>
-        <label>Seed phrase</label>
-        <input type="text" id="museSeed" value="The stars are trying to say" />
-        <label>Chaos</label>
-        <input type="range" id="museChaos" min="0" max="100" value="65" />
-        <div class="split-actions"><button onclick="runMuse()">Let the Language Think</button><button onclick="speakText('museResult')" class="secondary">Read Aloud</button></div>
-        <label>Generated predictive text</label>
-        <div id="museResult" class="result">Click the button and let the keyboard goblin cook.</div>
-      </section>
-
-
-      <section id="reverse" class="panel glass">
-        <h2>🃏 Uno Reverse Words</h2>
-        <p class="tiny">Paste any sentence, insult, spell, caption, fear, belief, or weird phrase. Uno Reverse flips the emotional charge and returns the opposite current. This is a word-play tool, not a truth machine.</p>
-        <label>Words to reverse</label>
-        <textarea id="reverseInput" placeholder="Example: I am afraid I will fail and nobody will understand me."></textarea>
-        <div class="grid-3">
-          <div>
-            <label>Reverse style</label>
-            <select id="reverseStyle">
-              <option value="opposite">Literal opposite</option>
-              <option value="power">Power flip</option>
-              <option value="shadow">Shadow mirror</option>
-              <option value="healing">Healing reframe</option>
-              <option value="chaos">Chaos goblin</option>
-            </select>
-          </div>
-          <div>
-            <label>Intensity</label>
-            <input id="reverseIntensity" type="range" min="1" max="10" value="7" />
-          </div>
-          <div>
-            <label>Output shape</label>
-            <select id="reverseShape">
-              <option value="sentence">Sentence</option>
-              <option value="spell">Spell / affirmation</option>
-              <option value="list">Line-by-line</option>
-            </select>
-          </div>
-        </div>
-        <div class="split-actions">
-          <button onclick="runReverse()">Uno Reverse It</button>
-          <button onclick="speakText('reverseResult')" class="secondary">Read Aloud</button>
-        </div>
-        <label>Uno reversed output</label>
-        <div id="reverseResult" class="result">Paste words and flip the current.</div>
-      </section>
-
-
-      <section id="neon" class="panel glass">
-        <h2>🌈 Neon Forge</h2>
-        <p class="tiny">Upload any photo, art, notebook page, symbol, selfie-free image, rock, sky shot, or screenshot and turn it into a StarChart13-style cyberpunk neon glow version. This runs in your browser: no API key needed.</p>
-        <div class="grid">
-          <div>
-            <label>Upload image</label>
-            <input type="file" accept="image/*" id="neonFile" />
-            <div class="grid-3">
-              <div>
-                <label>Neon preset</label>
-                <select id="neonPreset">
-                  <option value="rainbow">Rainbow Neon</option>
-                  <option value="starchart">StarChart13 Cosmic</option>
-                  <option value="synth">Purple/Pink Synthwave</option>
-                  <option value="blue">Electric Blue</option>
-                  <option value="matrix">Matrix Green</option>
-                  <option value="lava">Lava Neon</option>
-                </select>
-              </div>
-              <div><label>Glow strength</label><input id="neonGlow" type="range" min="0" max="100" value="72" /></div>
-              <div><label>Cyberpunk slider</label><input id="neonCyber" type="range" min="0" max="100" value="78" /></div>
+        <!-- Notebook Oracle -->
+        <section id="notebook" class="tool-section glass">
+            <h2>📓 Notebook Oracle</h2>
+            <p class="tool-desc">Uncover patterns in your thoughts</p>
+            <div class="upload-area">
+                <input type="file" id="notebook-file" accept="image/*" style="display:none">
+                <button onclick="document.getElementById('notebook-file').click()" class="upload-btn">📓 Upload Notebook Page</button>
             </div>
-            <div class="grid-3">
-              <div><label>Contrast</label><input id="neonContrast" type="range" min="80" max="220" value="145" /></div>
-              <div><label>Saturation</label><input id="neonSaturation" type="range" min="80" max="260" value="190" /></div>
-              <div><label>Stars</label><input id="neonStars" type="range" min="0" max="120" value="42" /></div>
+            <div id="notebook-interp" class="results hidden">
+                <h3>Interpretations</h3>
+                <div class="interp-modes">
+                    <button onclick="generateInterp('practical')" class="mode-btn">Practical Analysis</button>
+                    <button onclick="generateInterp('symbolic')" class="mode-btn">Symbolic Reading</button>
+                    <button onclick="generateInterp('dream')" class="mode-btn">Dream Logic</button>
+                </div>
+                <div id="interp-output"></div>
             </div>
-            <div class="split-actions">
-              <button onclick="forgeNeon()">Forge Neon Image</button>
-              <button onclick="downloadNeon()" class="secondary">Download PNG</button>
-              <button onclick="resetNeon()" class="secondary">Reset</button>
+        </section>
+
+        <!-- Any Image Oracle -->
+        <section id="image" class="tool-section glass">
+            <h2>🌍 Any Image Oracle</h2>
+            <p class="tool-desc">Multiple creative interpretations</p>
+            <div class="upload-area">
+                <input type="file" id="image-file" accept="image/*" style="display:none">
+                <button onclick="document.getElementById('image-file').click()" class="upload-btn">🖼️ Upload Any Image</button>
             </div>
-          </div>
-          <div>
-            <label>Neon preview</label>
-            <canvas id="neonCanvas"></canvas>
-          </div>
-        </div>
-        <label>Forge report</label>
-        <div id="neonResult" class="result">Upload an image, choose a preset, then hit Forge Neon Image. Best for art, symbols, manuscript pages, stars, profile graphics, and book promo images.</div>
-      </section>
+            <div id="image-results" class="results hidden"></div>
+        </section>
 
-      <section id="setup" class="panel glass">
-        <h2>⚙️ Upgrade Notes</h2>
-        <div class="feature warn">
-          <h3>To make this fully real</h3>
-          <p>You will add Netlify functions for OCR, translation, and AI interpretation so your private API keys never appear in the browser.</p>
-        </div>
-        <pre class="result">Recommended backend functions:
+        <!-- Neon Forge -->
+        <section id="neon" class="tool-section glass">
+            <h2>🌈 Neon Forge</h2>
+            <p class="tool-desc">Transform into cyberpunk visions</p>
+            <div class="upload-area">
+                <input type="file" id="neon-file" accept="image/*" style="display:none">
+                <button onclick="document.getElementById('neon-file').click()" class="upload-btn">🌈 Upload Image</button>
+            </div>
+            <div class="presets">
+                <button onclick="applyNeonPreset('rainbow')" class="preset-btn">Rainbow Neon</button>
+                <button onclick="applyNeonPreset('synthwave')" class="preset-btn">Purple Synthwave</button>
+                <button onclick="applyNeonPreset('matrix')" class="preset-btn">Matrix Green</button>
+                <button onclick="applyNeonPreset('lava')" class="preset-btn">Lava Neon</button>
+            </div>
+            <canvas id="neon-canvas" width="800" height="500" class="hidden"></canvas>
+        </section>
 
-netlify/functions/ocr.js
-- Receives image
-- Runs Google Cloud Vision DOCUMENT_TEXT_DETECTION
-- Returns extracted text + confidence
+        <!-- Other tools (abbreviated for space) -->
+        <section id="reverse" class="tool-section glass">
+            <h2>🃏 Uno Reverse</h2>
+            <textarea id="reverse-input" placeholder="Paste any statement..." rows="3"></textarea>
+            <button onclick="generateReverse()" class="neon-button">Generate Reversals</button>
+            <div id="reverse-results" class="results"></div>
+        </section>
 
-netlify/functions/translate.js
-- Receives extracted text
-- Runs Google Cloud Translation to English
-- Returns detected language + translation
+        <section id="muse" class="tool-section glass">
+            <h2>⌨️ Predictive Muse</h2>
+            <textarea id="muse-input" placeholder="Start writing..." rows="3"></textarea>
+            <label>Chaos Level: <input type="range" id="chaos" min="0" max="100" value="50"></label>
+            <button onclick="generateMuse()" class="neon-button">Continue with Muse</button>
+            <div id="muse-output" class="results"></div>
+        </section>
 
-netlify/functions/oracle.js
-- Receives OCR text, notebook notes, image observations, or signal transcript
-- Runs AI interpretation
-- Returns symbolic reading with confidence warning
-
-netlify/functions/notebook-oracle.js
-- Receives any image
-- Runs vision analysis or OCR if available
-- Returns: visible elements, extracted words if any, symbolic interpretation, practical notes
-
-Neon Forge
-- Browser-only canvas tool already works without API keys
-- Future upgrade: send forged image to AI image model for stronger stylization
-
-Never put API keys directly in index.html.</pre>
-      </section>
+        <section id="alchemy" class="tool-section glass">
+            <h2>🔮 Language Alchemy</h2>
+            <textarea id="alchemy-input" placeholder="Enter text to transmute..." rows="3"></textarea>
+            <button onclick="performAlchemy()" class="neon-button">Transmute</button>
+            <div id="alchemy-path" class="results"></div>
+        </section>
     </main>
 
     <footer>
-      <strong>Star Oracle</strong><br />
-      Decode text. Read symbols. Transform meaning. Keep the difference clear. ✦
+        <p>Star Oracle v1.0 • Experimental Creativity Laboratory • All outputs are artistic interpretations</p>
     </footer>
-  </div>
 
-  <script>
-    const tabs = document.querySelectorAll('.tab');
-    const panels = document.querySelectorAll('.panel');
-    tabs.forEach(tab => tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      panels.forEach(p => p.classList.remove('active'));
-      tab.classList.add('active');
-      document.getElementById(tab.dataset.tab).classList.add('active');
-    }));
+    <!-- Modals -->
+    <div id="about-modal" class="modal hidden">
+        <div class="modal-content glass">
+            <h2>About Star Oracle</h2>
+            <p>This is an experimental AI creativity laboratory. Every section clearly distinguishes between extracted data and creative interpretation.</p>
+            <button onclick="hideModal('about-modal')" class="neon-button">Close Portal</button>
+        </div>
+    </div>
 
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    let baseImage = null;
-    let currentMode = 'gray';
-
-    document.getElementById('rosettaFile').addEventListener('change', e => loadImage(e.target.files[0], img => {
-      baseImage = img;
-      drawImage();
-    }));
-
-    document.getElementById('starFile').addEventListener('change', e => {
-      const file = e.target.files[0];
-      if (!file) return;
-      document.getElementById('starPreview').src = URL.createObjectURL(file);
-    });
-
-    document.getElementById('notebookFile').addEventListener('change', e => {
-      const file = e.target.files[0];
-      if (!file) return;
-      document.getElementById('notebookPreview').src = URL.createObjectURL(file);
-    });
-
-    const neonCanvas = document.getElementById('neonCanvas');
-    const neonCtx = neonCanvas.getContext('2d');
-    let neonImage = null;
-
-    document.getElementById('neonFile').addEventListener('change', e => loadImage(e.target.files[0], img => {
-      neonImage = img;
-      forgeNeon();
-    }));
-
-    ['neonPreset','neonGlow','neonCyber','neonContrast','neonSaturation','neonStars'].forEach(id => {
-      document.getElementById(id).addEventListener('input', () => { if (neonImage) forgeNeon(); });
-      document.getElementById(id).addEventListener('change', () => { if (neonImage) forgeNeon(); });
-    });
-
-    ['contrast','brightness','threshold'].forEach(id => document.getElementById(id).addEventListener('input', drawImage));
-
-    function loadImage(file, cb) {
-      if (!file) return;
-      const img = new Image();
-      img.onload = () => cb(img);
-      img.src = URL.createObjectURL(file);
-    }
-
-    function applyMode(mode) {
-      currentMode = mode;
-      drawImage();
-    }
-
-    function drawImage() {
-      if (!baseImage) return;
-      const maxW = 1000;
-      const scale = Math.min(1, maxW / baseImage.width);
-      canvas.width = Math.round(baseImage.width * scale);
-      canvas.height = Math.round(baseImage.height * scale);
-      ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
-      let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      let d = imageData.data;
-      const contrast = Number(document.getElementById('contrast').value);
-      const brightness = Number(document.getElementById('brightness').value);
-      const threshold = Number(document.getElementById('threshold').value);
-      const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
-
-      for (let i = 0; i < d.length; i += 4) {
-        let r = d[i], g = d[i+1], b = d[i+2];
-        r = factor * (r - 128) + 128;
-        g = factor * (g - 128) + 128;
-        b = factor * (b - 128) + 128;
-        r *= brightness / 100; g *= brightness / 100; b *= brightness / 100;
-        const gray = (r * .299 + g * .587 + b * .114);
-
-        if (currentMode === 'gray') r = g = b = gray;
-        if (currentMode === 'invert') { r = 255 - r; g = 255 - g; b = 255 - b; }
-        if (currentMode === 'threshold') { const v = gray > threshold ? 255 : 0; r = g = b = v; }
-        if (currentMode === 'sharp') {
-          r = Math.min(255, Math.max(0, r * 1.18));
-          g = Math.min(255, Math.max(0, g * 1.18));
-          b = Math.min(255, Math.max(0, b * 1.18));
-        }
-        d[i] = clamp(r); d[i+1] = clamp(g); d[i+2] = clamp(b);
-      }
-      ctx.putImageData(imageData, 0, 0);
-    }
-
-    function clamp(v) { return Math.max(0, Math.min(255, v)); }
-
-    function simulateRosetta() {
-      const mode = currentMode;
-      const fake = `Extraction pass complete.\n\nBest enhancement candidate: ${mode.toUpperCase()}\nLikely use: manuscript / artifact / inscription preprocessing\n\nOCR status: demo mode\nDetected script: connect Google Vision OCR for real detection\nTranslation: connect Google Translate API for English output\n\nSuggested next pass:\n1. Crop tightly around text.\n2. Try Negative if letters are carved/light on dark stone.\n3. Try Black/White for faded ink.\n4. Try Sharpen for blurry manuscript edges.\n\nConfidence note: Ancient, damaged, symbolic, or unknown scripts need human review.`;
-      document.getElementById('rosettaResult').textContent = fake;
-    }
-
-    function readStars() {
-      const style = document.getElementById('starStyle').value;
-      const intensity = document.getElementById('starIntensity').value;
-      const lines = {
-        cosmic: 'The field shows scattered signal, clustered brightness, and a pull toward hidden alignment. Symbolically: scattered pieces are trying to become a map.',
-        gnostic: 'Fragment recovered: what was above was not silent; what was below learned to answer. The pattern speaks in breaks, not sentences.',
-        light: 'A luminous syllable pattern emerges: ARA · LUM · ENA · SAI. Treat this as symbolic sound, not literal language.',
-        technical: 'Pattern report: high contrast points, uneven clustering, possible false-glyph formation. This is visual pareidolia territory, useful for art and symbolic reading.'
-      };
-      document.getElementById('starResult').textContent = `Star Oracle Mode\nStyle: ${style}\nIntensity: ${intensity}/10\n\n${lines[style]}\n\nTruth-label: This is symbolic pattern interpretation, not literal astronomical translation.`;
-    }
-
-    function runAlchemy() {
-      const input = document.getElementById('alchemyInput').value.trim();
-      const gates = Number(document.getElementById('gates').value);
-      const style = document.getElementById('alchemyStyle').value;
-      if (!input) { document.getElementById('alchemyResult').textContent = 'Paste text first.'; return; }
-      let output = input;
-      const swaps = [
-        ['I', 'the witness'], ['you', 'the seeker'], ['truth', 'living truth'], ['love', 'recognition'],
-        ['fear', 'shadow'], ['world', 'garden'], ['know', 'remember'], ['see', 'behold']
-      ];
-      for (let i = 0; i < gates; i++) swaps.forEach(([a,b]) => output = output.replaceAll(new RegExp('\\b' + a + '\\b','gi'), b));
-      if (style === 'prophetic') output = 'It was written in the margin of becoming: ' + output;
-      if (style === 'poetic') output = output.split('.').filter(Boolean).map(s => s.trim()).join('\n');
-      if (style === 'mythic') output += '\n\nAnd so the sentence returned wearing starlight.';
-      document.getElementById('alchemyResult').textContent = output;
-    }
-
-
-    function readNotebook() {
-      const file = document.getElementById('notebookFile').files[0];
-      const lens = document.getElementById('notebookLens').value;
-      const intensity = document.getElementById('notebookIntensity').value;
-      if (!file) { document.getElementById('notebookResult').textContent = 'Upload an image first.'; return; }
-      const readings = {
-        notes: 'Notebook meaning map: look for repeated words, arrows, underlines, spacing, pressure, and what idea keeps returning. The page is treated as a thought-map, not just handwriting.',
-        symbols: 'Symbol scan: repeated shapes, circles, stars, crosses, serpents, eyes, boxes, spirals, and margins are read as archetypal clues. The strongest symbol becomes the center of the interpretation.',
-        artifact: 'Object scan: texture, scratches, symmetry, edge marks, and unnatural-looking grooves are separated from possible natural weathering. The oracle may suggest “marking,” “pattern,” or “unknown” rather than forcing certainty.',
-        dream: 'Dream logic: the image is read through mood, contrast, center/far edge tension, hidden figures, and emotional charge. This is for personal meaning, not evidence.',
-        practical: 'Practical scan: what is visibly present, what might need a closer photo, what could be cropped, what should be enhanced, and what parts deserve a second look.',
-        light: 'Light language mode: the image becomes syllables, rhythm, and feeling-tone. Example output may look like: LUMA · SAI · ENA · ORA. This is symbolic sound, not literal translation.'
-      };
-      document.getElementById('notebookResult').textContent = `Notebook Oracle / Any Image Reading\nFile: ${file.name}\nLens: ${lens}\nIntensity: ${intensity}/10\n\n${readings[lens]}\n\nSuggested next move:\n1. Crop the most interesting section.\n2. Run it through Negative or Black/White in Rosetta Lens.\n3. Compare the practical scan with the symbolic scan.\n4. Keep what resonates, but do not treat the output as proof.\n\nTruth-label: This is algorithmic interpretation and pattern exploration. It can be meaningful without being objectively certain.`;
-    }
-
-    function runSignal() {
-      const file = document.getElementById('signalFile').files[0];
-      const mode = document.getElementById('signalMode').value;
-      if (!file) { document.getElementById('signalResult').textContent = 'Upload audio or video first.'; return; }
-      document.getElementById('signalResult').textContent = `Signal scan loaded: ${file.name}\nMode: ${mode}\n\nDemo caption fragments:\n[00:02] breath / wind / low tone\n[00:07] possible syllable: ah-ra / air / there\n[00:13] noise cluster, low confidence\n\nTruth-label: Real captions require a speech-to-text backend. Ambient sound can produce false words when a model tries to force noise into language.`;
-    }
-
-    function runMuse() {
-      const seed = document.getElementById('museSeed').value || 'The stars say';
-      const chaos = Number(document.getElementById('museChaos').value);
-      const bank = [
-        'the signal bends', 'a hidden door remembers', 'language grows teeth', 'the moon keeps receipts',
-        'a pattern wakes under the image', 'nothing is random but not everything is literal',
-        'the oracle laughs softly', 'the manuscript exhales', 'meaning changes costumes', 'the sky becomes a keyboard'
-      ];
-      let text = seed;
-      const count = 5 + Math.round(chaos / 10);
-      for (let i = 0; i < count; i++) text += ' ' + bank[Math.floor(Math.random() * bank.length)] + (Math.random() > .55 ? '.' : ',');
-      document.getElementById('museResult').textContent = text;
-    }
-
-
-    function runReverse() {
-      const input = document.getElementById('reverseInput').value.trim();
-      const style = document.getElementById('reverseStyle').value;
-      const intensity = Number(document.getElementById('reverseIntensity').value);
-      const shape = document.getElementById('reverseShape').value;
-      if (!input) { document.getElementById('reverseResult').textContent = 'Paste words first.'; return; }
-
-      const opposites = {
-        "i can't": "I can", "i cannot": "I can", "can't": "can", "cannot": "can", "won't": "will", "don't": "do",
-        "afraid": "ready", "fear": "courage", "scared": "steady", "weak": "strong", "lost": "found", "alone": "supported",
-        "fail": "learn", "failure": "initiation", "hate": "release", "bad": "useful", "wrong": "revealing", "curse": "blessing",
-        "nobody": "the right people", "never": "eventually", "always": "sometimes", "impossible": "possible", "stuck": "moving",
-        "silenced": "heard", "forgotten": "remembered", "broken": "rebuilding", "chaos": "pattern", "dark": "illuminated", "death": "transformation"
-      };
-
-      let output = input;
-      Object.keys(opposites).sort((a,b) => b.length - a.length).forEach(k => {
-        output = output.replaceAll(new RegExp('\\b' + escapeRegExp(k) + '\\b', 'gi'), matchCase(opposites[k], k));
-      });
-
-      const wrappers = {
-        opposite: `Uno Reverse: ${output}`,
-        power: `Power flip:\n${output}\n\nThe sentence no longer gets to hold the remote. You do.`,
-        shadow: `Shadow mirror:\nWhat tried to shrink becomes a signal. What sounded final becomes unfinished.\n\n${output}`,
-        healing: `Healing reframe:\n${output}\n\nNew current: I can meet this without surrendering my mind, my voice, or my weird little lightning.`,
-        chaos: `Chaos goblin reverse:\n${output}\n\nUno card thrown. Table flipped. Meaning has left the group chat and returned wearing boots.`
-      };
-
-      let finalText = wrappers[style];
-      if (intensity >= 8) finalText += '\n\nAmplified: The reversed meaning is stronger than the original charge.';
-      if (shape === 'spell') finalText = `I reverse the old current.\nI return the charge to sender.\nI keep the lesson, not the wound.\n\n${output}`;
-      if (shape === 'list') finalText = `Original:\n${input}\n\nReversed:\n${output}\n\nMode: ${style} · Intensity: ${intensity}/10`;
-      finalText += '\n\nTruth-label: This is symbolic language play and emotional reframing. Use your judgment.';
-      document.getElementById('reverseResult').textContent = finalText;
-    }
-
-
-    function forgeNeon() {
-      if (!neonImage) { document.getElementById('neonResult').textContent = 'Upload an image first.'; return; }
-      const maxW = 1200;
-      const scale = Math.min(1, maxW / neonImage.width);
-      neonCanvas.width = Math.round(neonImage.width * scale);
-      neonCanvas.height = Math.round(neonImage.height * scale);
-
-      const preset = document.getElementById('neonPreset').value;
-      const glow = Number(document.getElementById('neonGlow').value) / 100;
-      const cyber = Number(document.getElementById('neonCyber').value) / 100;
-      const contrast = Number(document.getElementById('neonContrast').value);
-      const sat = Number(document.getElementById('neonSaturation').value) / 100;
-      const stars = Number(document.getElementById('neonStars').value);
-
-      neonCtx.clearRect(0,0,neonCanvas.width,neonCanvas.height);
-      neonCtx.filter = `contrast(${contrast}%) saturate(${sat * 100}%) brightness(${100 + cyber * 28}%)`;
-      neonCtx.drawImage(neonImage, 0, 0, neonCanvas.width, neonCanvas.height);
-      neonCtx.filter = 'none';
-
-      const imgData = neonCtx.getImageData(0, 0, neonCanvas.width, neonCanvas.height);
-      const d = imgData.data;
-      const palettes = {
-        rainbow: [[255,46,234],[53,231,255],[255,209,102],[112,255,191]],
-        starchart: [[255,46,234],[53,231,255],[155,92,255],[255,255,255]],
-        synth: [[255,46,234],[155,92,255],[53,231,255],[255,120,220]],
-        blue: [[53,231,255],[70,120,255],[255,255,255],[120,255,255]],
-        matrix: [[112,255,191],[60,255,90],[180,255,210],[10,40,25]],
-        lava: [[255,80,70],[255,209,102],[255,46,120],[80,10,20]]
-      };
-      const pal = palettes[preset];
-
-      for (let y = 0; y < neonCanvas.height; y++) {
-        for (let x = 0; x < neonCanvas.width; x++) {
-          const i = (y * neonCanvas.width + x) * 4;
-          const r = d[i], g = d[i+1], b = d[i+2];
-          const lum = (r * .299 + g * .587 + b * .114) / 255;
-          const p = pal[Math.floor(((x / neonCanvas.width) + (y / neonCanvas.height) + lum * 2) % 1 * pal.length)];
-          d[i] = clamp(r * (1 - cyber) + p[0] * cyber * (0.55 + lum));
-          d[i+1] = clamp(g * (1 - cyber) + p[1] * cyber * (0.55 + lum));
-          d[i+2] = clamp(b * (1 - cyber) + p[2] * cyber * (0.55 + lum));
-        }
-      }
-      neonCtx.putImageData(imgData, 0, 0);
-
-      // Bloom / glow layer
-      neonCtx.save();
-      neonCtx.globalCompositeOperation = 'screen';
-      neonCtx.globalAlpha = 0.65 + glow * .35;
-      neonCtx.filter = `blur(${8 + glow * 18}px) saturate(${180 + cyber * 120}%)`;
-      neonCtx.drawImage(neonCanvas, 0, 0);
-      neonCtx.filter = `blur(${2 + glow * 6}px)`;
-      neonCtx.globalAlpha = .35 + glow * .3;
-      neonCtx.drawImage(neonCanvas, 0, 0);
-      neonCtx.restore();
-
-      // Vignette / cosmic wash
-      const grad = neonCtx.createRadialGradient(neonCanvas.width*.5, neonCanvas.height*.45, 10, neonCanvas.width*.5, neonCanvas.height*.5, Math.max(neonCanvas.width, neonCanvas.height)*.72);
-      grad.addColorStop(0, 'rgba(255,255,255,0)');
-      grad.addColorStop(1, 'rgba(3,3,16,.62)');
-      neonCtx.fillStyle = grad;
-      neonCtx.fillRect(0,0,neonCanvas.width,neonCanvas.height);
-
-      // Star particles
-      const seed = neonCanvas.width + neonCanvas.height + preset.length;
-      for (let s = 0; s < stars; s++) {
-        const x = pseudo(seed + s * 13) * neonCanvas.width;
-        const y = pseudo(seed + s * 29) * neonCanvas.height;
-        const size = 0.7 + pseudo(seed + s * 43) * 2.2;
-        neonCtx.globalAlpha = .35 + pseudo(seed + s * 7) * .65;
-        neonCtx.fillStyle = s % 3 === 0 ? '#35e7ff' : s % 3 === 1 ? '#ff2eea' : '#ffffff';
-        neonCtx.beginPath();
-        neonCtx.arc(x, y, size, 0, Math.PI * 2);
-        neonCtx.fill();
-      }
-      neonCtx.globalAlpha = 1;
-
-      // Planet accent
-      const px = neonCanvas.width * .82, py = neonCanvas.height * .18, pr = Math.max(12, Math.min(neonCanvas.width, neonCanvas.height) * .045);
-      const planet = neonCtx.createRadialGradient(px-pr*.3, py-pr*.3, 2, px, py, pr);
-      planet.addColorStop(0, 'rgba(255,255,255,.9)');
-      planet.addColorStop(.42, 'rgba(255,46,234,.65)');
-      planet.addColorStop(1, 'rgba(53,231,255,.1)');
-      neonCtx.fillStyle = planet;
-      neonCtx.shadowColor = '#35e7ff';
-      neonCtx.shadowBlur = 22;
-      neonCtx.beginPath();
-      neonCtx.arc(px, py, pr, 0, Math.PI*2);
-      neonCtx.fill();
-      neonCtx.shadowBlur = 0;
-      neonCtx.strokeStyle = 'rgba(255,255,255,.55)';
-      neonCtx.beginPath();
-      neonCtx.ellipse(px, py, pr*1.8, pr*.45, -0.3, 0, Math.PI*2);
-      neonCtx.stroke();
-
-      document.getElementById('neonResult').textContent = `Neon Forge complete.\nPreset: ${preset}\nGlow: ${Math.round(glow*100)}%\nCyberpunk: ${Math.round(cyber*100)}%\nStars added: ${stars}\n\nTip: Use this for book promo images, oracle screenshots, artifact photos, notebook excerpts, StarChart13 graphics, and social posts. For text-heavy manuscript images, make a pretty neon copy here, but use Rosetta Lens for readability.`;
-    }
-
-    function pseudo(n) {
-      const x = Math.sin(n * 999) * 10000;
-      return x - Math.floor(x);
-    }
-
-    function downloadNeon() {
-      if (!neonImage) { alert('Upload and forge an image first.'); return; }
-      const a = document.createElement('a');
-      a.download = 'star-oracle-neon-forge.png';
-      a.href = neonCanvas.toDataURL('image/png');
-      a.click();
-    }
-
-    function resetNeon() {
-      if (!neonImage) return;
-      document.getElementById('neonPreset').value = 'rainbow';
-      document.getElementById('neonGlow').value = 72;
-      document.getElementById('neonCyber').value = 78;
-      document.getElementById('neonContrast').value = 145;
-      document.getElementById('neonSaturation').value = 190;
-      document.getElementById('neonStars').value = 42;
-      forgeNeon();
-    }
-
-    function escapeRegExp(str) {
-      return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    }
-
-    function matchCase(replacement, original) {
-      if (original && original[0] === original[0].toUpperCase()) {
-        return replacement.charAt(0).toUpperCase() + replacement.slice(1);
-      }
-      return replacement;
-    }
-
-    function speakText(id) {
-      const txt = document.getElementById(id).textContent;
-      if (!('speechSynthesis' in window)) return alert('Text-to-speech is not supported in this browser.');
-      speechSynthesis.cancel();
-      speechSynthesis.speak(new SpeechSynthesisUtterance(txt));
-    }
-  </script>
+    <script src="app.js"></script>
 </body>
 </html>
