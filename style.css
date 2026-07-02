@@ -1,100 +1,208 @@
 /* =============================================
-   BETTER MOBILE LAYOUT (Optimized)
+   STAR ORACLE - Fresh Style.css v1.2
+   Cyberpunk + Mobile-First
    ============================================= */
+
+:root {
+    --neon-pink: #ff00ff;
+    --neon-cyan: #00ffff;
+    --bg-dark: #0a001f;
+    --glass: rgba(25, 15, 60, 0.7);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg-dark);
+    color: #e0e0ff;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Background */
+.stars, .planets {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Header */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10, 0, 31, 0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 0, 255, 0.3);
+}
+
+.nav {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.85rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    cursor: pointer;
+}
+
+.main-nav {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.main-nav a {
+    color: #ddd;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.main-nav a:hover,
+.main-nav a.active {
+    background: rgba(255, 0, 255, 0.15);
+    color: var(--neon-pink);
+}
+
+/* Mobile Menu */
+.menu-toggle {
+    display: none;
+    font-size: 1.9rem;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
 @media (max-width: 768px) {
-    /* Navigation - Stack vertically for mobile */
-    nav {
-        display: flex;
+    .menu-toggle { display: block; }
+    
+    .main-nav {
+        position: fixed;
+        top: 75px;
+        left: 0;
+        right: 0;
+        background: rgba(10, 0, 31, 0.98);
         flex-direction: column;
-        gap: 16px;           /* Slightly increased for better touch targets */
-        text-align: center;
-        align-items: center; /* Ensures proper centering */
+        gap: 12px;
+        padding: 20px;
+        transform: translateY(-150%);
+        transition: transform 0.4s ease;
+        box-shadow: 0 15px 30px rgba(0,0,0,0.7);
     }
-
-    /* Logo improvements */
-    .logo {
-        text-align: center;
-        width: 100%;
-        max-width: 280px;    /* Prevents overly wide logo on very small screens */
-        margin-bottom: 20px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    /* Glitch / Title text sizing */
-    .glitch {
-        font-size: 2.4rem;   /* Balanced size - readable without being huge */
-        line-height: 1.1;
-        margin-bottom: 0.5em;
-    }
-
-    /* Hero section - more breathing room */
-    .hero {
-        height: auto;
-        min-height: 60vh;    /* Ensures decent vertical space */
-        padding: 60px 20px 40px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-    }
-
-    /* Neon button - full width but capped */
-    .neon-button {
-        width: 100%;
-        max-width: 320px;
-        padding: 16px 24px;  /* Better touch target */
-        font-size: 1.1rem;
-        margin: 10px auto;   /* Center it */
-    }
-
-    /* Tool sections */
-    .tool-section {
-        padding: 24px 20px;
-        margin-bottom: 16px;
-    }
-
-    /* Additional common mobile improvements */
-    .container {
-        padding-left: 16px;
-        padding-right: 16px;
-    }
-
-    h1, h2, h3 {
-        font-size: 1.8rem;   /* Scale headings appropriately */
-    }
-
-    p {
-        font-size: 1.05rem;
-        line-height: 1.6;
-    }
-
-    /* Ensure images don't break layout */
-    img {
-        max-width: 100%;
-        height: auto;
-    }
-
-    /* Footer / other sections */
-    footer {
-        padding: 30px 20px;
-        text-align: center;
+    
+    .main-nav.open {
+        transform: translateY(0);
     }
 }
 
-/* Extra small phones */
-@media (max-width: 480px) {
-    .glitch {
-        font-size: 2.1rem;
-    }
-    
-    .hero {
-        padding: 50px 16px 35px;
+/* Hero Section */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.glitch {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(2.6rem, 9vw, 5.5rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 6px;
+    text-shadow: 0 0 15px var(--neon-pink),
+                 0 0 35px var(--neon-cyan);
+    margin-bottom: 1rem;
+}
+
+/* Glassmorphism */
+.glass, .tool-section {
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 18px;
+    padding: 2.2rem;
+    margin: 1.5rem auto;
+    max-width: 1080px;
+}
+
+/* Neon Buttons */
+.neon-button {
+    padding: 15px 34px;
+    margin: 10px 6px;
+    border: 2px solid var(--neon-pink);
+    background: transparent;
+    color: white;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+}
+
+.neon-button:hover {
+    background: var(--neon-pink);
+    box-shadow: 0 0 30px var(--neon-pink),
+                0 0 50px var(--neon-cyan);
+    transform: translateY(-3px);
+    color: #000;
+}
+
+/* Upload Areas */
+.upload-area {
+    border: 2px dashed var(--neon-cyan);
+    border-radius: 14px;
+    padding: 3rem 1rem;
+    text-align: center;
+    margin: 20px 0;
+    transition: 0.3s;
+}
+
+.upload-area:hover {
+    border-color: var(--neon-pink);
+    background: rgba(255, 0, 255, 0.08);
+}
+
+/* Responsive Tweaks */
+@media (max-width: 768px) {
+    .glass, .tool-section {
+        padding: 1.6rem 1.2rem;
+        margin: 1rem auto;
     }
     
     .neon-button {
-        padding: 14px 20px;
-        font-size: 1rem;
+        width: 100%;
+        max-width: 340px;
+        display: block;
+        margin: 12px auto;
     }
 }
+
+footer {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    opacity: 0.85;
+    font-size: 0.95rem;
+}
+
+/* Hidden */
+.hidden { display: none !important; }
