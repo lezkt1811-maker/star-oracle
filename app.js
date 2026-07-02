@@ -1,167 +1,210 @@
-// Star Oracle v1.0 - Full Interactive Experience
+// =============================================
+// Star Oracle v1.1 - Upgraded JavaScript
+// =============================================
 
 let currentTool = null;
+let neonCtx = null;
 
+// Navigation
 function navigateTo(tool) {
+    // Hide all tool sections
     document.querySelectorAll('.tool-section').forEach(section => {
         section.style.display = section.id === tool ? 'block' : 'none';
     });
+    
+    // Highlight active nav link (optional)
+    document.querySelectorAll('.main-nav a').forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === `#${tool}`);
+    });
+    
     currentTool = tool;
+    
+    // Close mobile menu if open
+    const nav = document.getElementById('mainNav');
+    if (nav) nav.classList.remove('open');
 }
 
+// Mobile Menu Toggle
+function toggleMenu() {
+    const nav = document.getElementById('mainNav');
+    if (nav) nav.classList.toggle('open');
+}
+
+// Theme Toggle
 function toggleTheme() {
-    const body = document.body;
-    if (body.style.backgroundColor === 'rgb(26, 0, 51)') {
-        body.style.backgroundColor = '#0a001f';
-    } else {
-        body.style.backgroundColor = '#1a0033';
-    }
+    document.body.classList.toggle('dark-theme');
+    // You can expand this with localStorage later
 }
 
-function showSettings() {
-    alert("🌌 Settings (v1.1)\n\n• API Configuration\n• Save Sessions\n• Export Interpretations");
-}
-
+// Modals
 function showAbout() {
-    document.getElementById('about-modal').classList.toggle('hidden');
+    const modal = document.getElementById('about-modal');
+    if (modal) modal.classList.remove('hidden');
 }
 
 function hideModal(id) {
-    document.getElementById(id).classList.add('hidden');
+    const modal = document.getElementById(id);
+    if (modal) modal.classList.add('hidden');
+}
+
+function showSettings() {
+    alert("🌌 Star Oracle Settings\n\n• Theme preferences\n• Session saving (coming soon)\n• Export results\n• API keys (future)");
 }
 
 // Rosetta Lens
-document.getElementById('rosetta-file').addEventListener('change', (e) => {
-    if (e.target.files[0]) {
-        document.getElementById('rosetta-results').classList.remove('hidden');
-        alert("✨ Rosetta Lens activated!\n\nSimulated OCR + enhancement complete.\nConfidence: 87%");
-    }
-});
-
-function speakText() {
-    const text = document.getElementById('ocr-text').value;
-    if ('speechSynthesis' in window) {
-        speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+function initRosetta() {
+    const fileInput = document.getElementById('rosetta-file');
+    if (fileInput) {
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files[0]) {
+                const results = document.getElementById('rosetta-results');
+                if (results) results.classList.remove('hidden');
+                alert("✨ Rosetta Lens activated!\n\nOCR + Symbolic interpretation complete.");
+            }
+        });
     }
 }
 
 // Neon Forge
-let neonCtx;
-document.getElementById('neon-file').addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
+function initNeonForge() {
+    const fileInput = document.getElementById('neon-file');
     const canvas = document.getElementById('neon-canvas');
-    canvas.classList.remove('hidden');
-    neonCtx = canvas.getContext('2d');
+    
+    if (fileInput) {
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file || !canvas) return;
 
-    const img = new Image();
-    img.onload = () => {
-        canvas.width = img.width > 800 ? 800 : img.width;
-        canvas.height = img.height;
-        neonCtx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        applyNeonEffect('rainbow');
-    };
-    img.src = URL.createObjectURL(file);
-});
+            canvas.classList.remove('hidden');
+            neonCtx = canvas.getContext('2d');
 
-function applyNeonPreset(preset) {
-    if (neonCtx) applyNeonEffect(preset);
-    else alert("Upload an image first to activate Neon Forge ✨");
+            const img = new Image();
+            img.onload = () => {
+                canvas.width = Math.min(img.width, 800);
+                canvas.height = img.height;
+                neonCtx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                applyNeonPreset('rainbow');
+            };
+            img.src = URL.createObjectURL(file);
+        });
+    }
 }
 
-function applyNeonEffect(preset) {
-    // Advanced canvas neon simulation
+function applyNeonPreset(preset) {
+    if (!neonCtx) {
+        alert("Please upload an image first ✨");
+        return;
+    }
+    
     const canvas = document.getElementById('neon-canvas');
     neonCtx.save();
     neonCtx.globalCompositeOperation = 'screen';
-    
-    if (preset === 'rainbow') {
-        neonCtx.fillStyle = 'rgba(255, 0, 255, 0.4)';
-    } else if (preset === 'synthwave') {
-        neonCtx.fillStyle = 'rgba(180, 0, 255, 0.5)';
-    } else if (preset === 'matrix') {
-        neonCtx.fillStyle = 'rgba(0, 255, 100, 0.5)';
-    } else {
-        neonCtx.fillStyle = 'rgba(255, 80, 0, 0.5)';
-    }
-    
+
+    const colors = {
+        rainbow: 'rgba(255, 0, 255, 0.45)',
+        synthwave: 'rgba(180, 0, 255, 0.55)',
+        matrix: 'rgba(0, 255, 120, 0.5)',
+        lava: 'rgba(255, 100, 0, 0.5)'
+    };
+
+    neonCtx.fillStyle = colors[preset] || colors.rainbow;
     neonCtx.fillRect(0, 0, canvas.width, canvas.height);
     neonCtx.restore();
-    alert(`🌈 ${preset.toUpperCase()} neon applied!`);
+    
+    alert(`🌈 ${preset.toUpperCase()} Neon Forge activated!`);
 }
 
-// Uno Reverse
+// Text Tools
 function generateReverse() {
-    const input = document.getElementById('reverse-input').value.trim();
-    if (!input) return alert("Enter a statement first");
+    const input = document.getElementById('reverse-input')?.value.trim();
+    if (!input) return alert("Enter some text to reverse ✨");
     
-    const resultsDiv = document.getElementById('reverse-results');
-    resultsDiv.innerHTML = `
-        <div class="glass" style="padding:1.5rem">
-            <strong>Literal Opposite:</strong> ${input.split(' ').reverse().join(' ')}<br><br>
-            <strong>Shadow Mirror:</strong> What if the opposite of "${input}" reveals your hidden power?<br><br>
-            <strong>Healing Reframe:</strong> This situation invites you to embrace cosmic flow.
-        </div>
-    `;
+    const results = document.getElementById('reverse-results');
+    if (results) {
+        results.innerHTML = `
+            <div class="glass" style="padding: 1.5rem; margin-top: 1rem;">
+                <strong>Literal Opposite:</strong> ${input.split(' ').reverse().join(' ')}<br><br>
+                <strong>Shadow Mirror:</strong> What if the opposite reveals your hidden strength?<br><br>
+                <strong>Healing Reframe:</strong> The universe invites you to flow with this energy.
+            </div>
+        `;
+    }
 }
 
-// Predictive Muse
 function generateMuse() {
-    const input = document.getElementById('muse-input').value.trim();
-    const chaos = document.getElementById('chaos').value;
+    const input = document.getElementById('muse-input')?.value.trim();
+    const chaos = document.getElementById('chaos')?.value || 50;
     if (!input) return;
-    
+
     const output = document.getElementById('muse-output');
-    output.innerHTML = `<p>${input}... under neon skies, the universe whispered back: "You are the algorithm of wonder."</p><small>Chaos: ${chaos}%</small>`;
+    if (output) {
+        output.innerHTML = `
+            <p>${input}... and the neon stars whispered back: "You are the algorithm writing reality."</p>
+            <small>Chaos Level: ${chaos}%</small>
+        `;
+    }
 }
 
-// Language Alchemy
 function performAlchemy() {
-    const input = document.getElementById('alchemy-input').value.trim();
+    const input = document.getElementById('alchemy-input')?.value.trim();
     if (!input) return;
-    
-    document.getElementById('alchemy-path').innerHTML = `
-        <p>🌐 Path: English → French → Japanese → Cosmic → English</p>
-        <p style="font-style:italic; color:var(--neon-cyan)">"${input}" → "The stars remember your name in light language."</p>
-    `;
+
+    const output = document.getElementById('alchemy-path');
+    if (output) {
+        output.innerHTML = `
+            <p>🌐 Transmutation Path: English → Starlight → Cosmic → English</p>
+            <p style="font-style:italic; color:#00ffff">"${input}" became: "The stars remember your name in light language."</p>
+        `;
+    }
 }
 
-// Notebook & Image Oracle
+// Notebook & Image helpers
 function generateInterp(mode) {
     const output = document.getElementById('interp-output');
-    output.innerHTML = `<div class="glass" style="padding:1rem"><strong>${mode.toUpperCase()}:</strong> Your notebook reveals recurring themes of cosmic reconnection and creative rebellion.</div>`;
+    if (output) {
+        output.innerHTML = `
+            <div class="glass" style="padding:1rem; margin-top:1rem;">
+                <strong>${mode.toUpperCase()} Reading:</strong> 
+                Your notebook pulses with themes of cosmic reconnection and creative rebellion.
+            </div>
+        `;
+    }
 }
 
-document.getElementById('image-file').addEventListener('change', () => {
-    document.getElementById('image-results').classList.remove('hidden');
-    document.getElementById('image-results').innerHTML = `
-        <div class="glass">
-            <h3>Creative Interpretations</h3>
-            <p><strong>Symbolic:</strong> Portal to another dimension</p>
-            <p><strong>Archetypal:</strong> The Fool's Journey begins here</p>
-        </div>
-    `;
-});
-
-// Drag and drop support
+// Drag & Drop
 function enableDragDrop() {
-    const areas = document.querySelectorAll('.upload-area');
-    areas.forEach(area => {
-        area.addEventListener('dragover', e => { e.preventDefault(); area.style.borderColor = '#00ffff'; });
-        area.addEventListener('dragleave', () => area.style.borderColor = 'var(--neon-purple)');
+    document.querySelectorAll('.upload-area').forEach(area => {
+        area.addEventListener('dragover', e => {
+            e.preventDefault();
+            area.style.borderColor = '#00ffff';
+            area.style.background = 'rgba(0, 255, 255, 0.1)';
+        });
+        
+        area.addEventListener('dragleave', () => {
+            area.style.borderColor = '';
+            area.style.background = '';
+        });
+        
         area.addEventListener('drop', e => {
             e.preventDefault();
-            area.style.borderColor = 'var(--neon-purple)';
-            alert("File received! Processing with Star Oracle...");
+            area.style.borderColor = '';
+            area.style.background = '';
+            alert("📥 File received! Star Oracle is processing...");
+            // You can extend this to handle actual files
         });
     });
 }
 
-// Init
+// Initialize everything
 document.addEventListener('DOMContentLoaded', () => {
     enableDragDrop();
-    // Show hero first
-    document.querySelectorAll('.tool-section').forEach(s => s.style.display = 'none');
-    console.log('%c🌌 Star Oracle v1.0 fully loaded. Welcome, seeker.', 'color:#ff00ff; font-size:16px');
+    initRosetta();
+    initNeonForge();
+
+    // Hide all tools initially
+    document.querySelectorAll('.tool-section').forEach(s => {
+        s.style.display = 'none';
+    });
+
+    console.log('%c🌌 Star Oracle v1.1 initialized. Welcome, seeker of patterns.', 'color:#ff00ff; font-size:16px; font-family:Orbitron');
 });
