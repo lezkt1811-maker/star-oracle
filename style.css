@@ -1,13 +1,14 @@
 /* =============================================
-   STAR ORACLE - Fresh Style.css v1.2
-   Cyberpunk + Mobile-First
+   STAR ORACLE - Cyberpunk Neon v1.3
+   Dark + Glowing Neon Theme
    ============================================= */
 
 :root {
     --neon-pink: #ff00ff;
     --neon-cyan: #00ffff;
-    --bg-dark: #0a001f;
-    --glass: rgba(25, 15, 60, 0.7);
+    --neon-purple: #9d00ff;
+    --bg: #0a001f;
+    --glass: rgba(15, 5, 45, 0.75);
 }
 
 * {
@@ -18,18 +19,18 @@
 
 body {
     font-family: 'Inter', system-ui, sans-serif;
-    background: var(--bg-dark);
+    background: var(--bg);
     color: #e0e0ff;
     line-height: 1.6;
     overflow-x: hidden;
 }
 
-/* Background */
-.stars, .planets {
+/* Background Glow */
+body::before {
+    content: '';
     position: fixed;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
+    background: radial-gradient(circle at 50% 30%, rgba(255,0,255,0.08), transparent 60%);
     z-index: -1;
     pointer-events: none;
 }
@@ -39,9 +40,9 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(10, 0, 31, 0.96);
+    background: rgba(10, 0, 31, 0.95);
     backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255, 0, 255, 0.3);
+    border-bottom: 1px solid var(--neon-pink);
 }
 
 .nav {
@@ -55,64 +56,34 @@ body {
 
 .logo {
     font-family: 'Orbitron', sans-serif;
-    font-size: 1.85rem;
-    font-weight: 700;
-    letter-spacing: 4px;
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: 6px;
+    background: linear-gradient(90deg, var(--neon-pink), var(--neon-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 20px var(--neon-pink);
     cursor: pointer;
 }
 
-.main-nav {
-    display: flex;
-    gap: 1.5rem;
-}
-
+/* Navigation */
 .main-nav a {
     color: #ddd;
     text-decoration: none;
-    padding: 8px 16px;
+    padding: 10px 18px;
     border-radius: 8px;
-    transition: 0.3s;
+    transition: all 0.3s;
+    text-shadow: 0 0 8px var(--neon-cyan);
 }
 
 .main-nav a:hover,
 .main-nav a.active {
-    background: rgba(255, 0, 255, 0.15);
-    color: var(--neon-pink);
-}
-
-/* Mobile Menu */
-.menu-toggle {
-    display: none;
-    font-size: 1.9rem;
-    background: none;
-    border: none;
     color: white;
-    cursor: pointer;
+    background: rgba(255, 0, 255, 0.2);
+    box-shadow: 0 0 15px var(--neon-pink);
 }
 
-@media (max-width: 768px) {
-    .menu-toggle { display: block; }
-    
-    .main-nav {
-        position: fixed;
-        top: 75px;
-        left: 0;
-        right: 0;
-        background: rgba(10, 0, 31, 0.98);
-        flex-direction: column;
-        gap: 12px;
-        padding: 20px;
-        transform: translateY(-150%);
-        transition: transform 0.4s ease;
-        box-shadow: 0 15px 30px rgba(0,0,0,0.7);
-    }
-    
-    .main-nav.open {
-        transform: translateY(0);
-    }
-}
-
-/* Hero Section */
+/* Hero */
 .hero {
     min-height: 100vh;
     display: flex;
@@ -120,74 +91,80 @@ body {
     justify-content: center;
     text-align: center;
     padding: 0 20px;
+    position: relative;
 }
 
 .glitch {
     font-family: 'Orbitron', sans-serif;
-    font-size: clamp(2.6rem, 9vw, 5.5rem);
+    font-size: clamp(3rem, 10vw, 6rem);
     font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: 6px;
-    text-shadow: 0 0 15px var(--neon-pink),
-                 0 0 35px var(--neon-cyan);
-    margin-bottom: 1rem;
+    letter-spacing: 8px;
+    text-shadow: 
+        0 0 10px var(--neon-pink),
+        0 0 30px var(--neon-pink),
+        0 0 50px var(--neon-cyan);
+    margin-bottom: 1.5rem;
+    animation: glitch 2s infinite alternate;
 }
 
-/* Glassmorphism */
+@keyframes glitch {
+    0% { text-shadow: 2px 2px var(--neon-pink), -2px -2px var(--neon-cyan); }
+    100% { text-shadow: -2px -2px var(--neon-pink), 2px 2px var(--neon-cyan); }
+}
+
+/* Glass Cards */
 .glass, .tool-section {
     background: var(--glass);
     backdrop-filter: blur(16px);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 18px;
-    padding: 2.2rem;
+    border: 1px solid rgba(255, 0, 255, 0.4);
+    border-radius: 16px;
+    padding: 2rem;
     margin: 1.5rem auto;
-    max-width: 1080px;
+    max-width: 1100px;
+    box-shadow: 0 0 30px rgba(157, 0, 255, 0.3);
 }
 
 /* Neon Buttons */
 .neon-button {
-    padding: 15px 34px;
-    margin: 10px 6px;
+    padding: 16px 36px;
+    margin: 10px;
     border: 2px solid var(--neon-pink);
     background: transparent;
     color: white;
-    font-weight: 600;
+    font-weight: 700;
     border-radius: 50px;
     cursor: pointer;
     transition: all 0.4s ease;
     text-transform: uppercase;
-    letter-spacing: 1.2px;
+    letter-spacing: 2px;
+    box-shadow: 0 0 15px var(--neon-pink);
 }
 
 .neon-button:hover {
     background: var(--neon-pink);
-    box-shadow: 0 0 30px var(--neon-pink),
-                0 0 50px var(--neon-cyan);
-    transform: translateY(-3px);
     color: #000;
+    box-shadow: 0 0 40px var(--neon-pink),
+                0 0 60px var(--neon-cyan);
+    transform: scale(1.05);
 }
 
-/* Upload Areas */
-.upload-area {
-    border: 2px dashed var(--neon-cyan);
-    border-radius: 14px;
-    padding: 3rem 1rem;
-    text-align: center;
-    margin: 20px 0;
-    transition: 0.3s;
-}
-
-.upload-area:hover {
-    border-color: var(--neon-pink);
-    background: rgba(255, 0, 255, 0.08);
-}
-
-/* Responsive Tweaks */
+/* Mobile */
 @media (max-width: 768px) {
-    .glass, .tool-section {
-        padding: 1.6rem 1.2rem;
-        margin: 1rem auto;
+    .menu-toggle { display: block; font-size: 2rem; }
+    
+    .main-nav {
+        position: fixed;
+        top: 75px;
+        left: 0; right: 0;
+        background: rgba(10, 0, 31, 0.98);
+        flex-direction: column;
+        padding: 20px;
+        transform: translateY(-120%);
+        transition: 0.4s;
     }
+    
+    .main-nav.open { transform: translateY(0); }
     
     .neon-button {
         width: 100%;
@@ -199,10 +176,7 @@ body {
 
 footer {
     text-align: center;
-    padding: 2.5rem 1rem;
-    opacity: 0.85;
-    font-size: 0.95rem;
+    padding: 3rem 1rem;
+    color: #aaa;
+    text-shadow: 0 0 10px var(--neon-cyan);
 }
-
-/* Hidden */
-.hidden { display: none !important; }
